@@ -52,10 +52,15 @@ ingress:
       paths:
         - path: /sm-service
           pathType: ImplementationSpecific
+    - host: shai.one
+      paths:
+        - path: /sm-service
+          pathType: ImplementationSpecific
   tls:
    - secretName: ds-portfolio-ui
      hosts:
        - dawnshee.com
+       - shai.one
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

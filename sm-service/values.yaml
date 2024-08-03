@@ -57,7 +57,7 @@ ingress:
         - path: /sm-service
           pathType: ImplementationSpecific
   tls:
-   - secretName: ds-portfolio-ui
+   - secretName: sm-service
      hosts:
        - dawnshee.com
        - shai.one

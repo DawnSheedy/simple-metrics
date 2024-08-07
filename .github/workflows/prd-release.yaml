@@ -36,5 +36,9 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Authenticate kubectl
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ds-k8s
+      - name: Create namespace prd if it doesn't exist
+        run: kubectl create namespace prd --dry-run=client -o yaml | kubectl apply -f -
+      - name: Set DB Connection String Secret
+        run: kubectl create secret generic unibeat-api-secret --from-literal=postgres-connection-string='${{ secrets.PRD_POSTGRES_CONNECTION_STRING }}' -n prd --dry-run=client -o yaml | kubectl apply -f -
       - name: Helm Deploy
         run: helm upgrade --install --create-namespace -n prd --set image.tag=${{ github.event.release.tag_name }} --set envPrefix=prd unibeat-api unibeat-api

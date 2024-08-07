@@ -1,4 +1,4 @@
-name: Publish unibeat-api to ds-k8s staging
+name: Publish unibeat-api to Staging k8s
 on:
   push:
     branches: [main]

@@ -1,4 +1,4 @@
-name: Release unibeat-api to production k8s
+name: Release unibeat-api to Production k8s
 on:
   release:
     types: [published]

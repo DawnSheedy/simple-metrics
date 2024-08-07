@@ -45,11 +45,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /unibeat-api/v1/status
+              path: /unibeat/api/v1/status
               port: http
           readinessProbe:
             httpGet:
-              path: /unibeat-api/v1/status
+              path: /unibeat/api/v1/status
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

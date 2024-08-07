@@ -17,13 +17,13 @@ jobs:
       - name: Expose GitHub Runtime
         uses: crazy-max/ghaction-github-runtime@v3
       - name: Build image
-        run: docker build --platform=linux/amd64 -t sm-service .
+        run: docker build --platform=linux/amd64 -t unibeat-api .
       - name: Login to container registry
         run: doctl registry login --expiry-seconds 600
       - name: Tag image
-        run: docker tag sm-service registry.digitalocean.com/ds-services-container/sm-service:${{ github.sha }}
+        run: docker tag unibeat-api registry.digitalocean.com/ds-services-container/unibeat-api:${{ github.sha }}
       - name: Push image to DO Container Registry
-        run: docker push registry.digitalocean.com/ds-services-container/sm-service:${{ github.sha }}
+        run: docker push registry.digitalocean.com/ds-services-container/unibeat-api:${{ github.sha }}
 
   deploy:
     name: Configure and deploy to staging
@@ -38,5 +38,9 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Authenticate kubectl
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ds-k8s
+      - name: Create namespace stg if it doesn't exist
+        run: kubectl create namespace stg --dry-run=client -o yaml | kubectl apply -f -
+      - name: Set DB Connection String Secret
+        run: kubectl create secret generic unibeat-api-secret --from-literal=postgres-connection-string='${{ secrets.STG_POSTGRES_CONNECTION_STRING }}' -n stg --dry-run=client -o yaml | kubectl apply -f -
       - name: Helm Deploy
-        run: helm upgrade --install --create-namespace -n stg --set image.tag=${{ github.sha }} --set envPrefix=stg sm-service sm-service
+        run: helm upgrade --install --create-namespace -n stg --set image.tag=${{ github.sha }} --set envPrefix=stg unibeat-api unibeat-api

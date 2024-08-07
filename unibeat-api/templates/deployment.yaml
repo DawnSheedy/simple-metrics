@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "sm-service.fullname" . }}
+  name: {{ include "unibeat-api.fullname" . }}
   labels:
-    {{- include "sm-service.labels" . | nindent 4 }}
+    {{- include "unibeat-api.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "sm-service.selectorLabels" . | nindent 6 }}
+      {{- include "unibeat-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "sm-service.selectorLabels" . | nindent 8 }}
+        {{- include "unibeat-api.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "sm-service.serviceAccountName" . }}
+      serviceAccountName: {{ include "unibeat-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -33,17 +33,23 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: POSTGRES_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: unibeat-api-secret
+                key: postgres-connection-string
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /sm-service/status
+              path: /unibeat-api/v1/status
               port: http
           readinessProbe:
             httpGet:
-              path: /sm-service/status
+              path: /unibeat-api/v1/status
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

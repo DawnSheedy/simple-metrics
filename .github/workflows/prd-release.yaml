@@ -15,13 +15,13 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Build image
-        run: docker build --platform=linux/amd64 -t sm-service .
+        run: docker build --platform=linux/amd64 -t unibeat-api .
       - name: Login to container registry
         run: doctl registry login --expiry-seconds 600
       - name: Tag image
-        run: docker tag sm-service registry.digitalocean.com/ds-services-container/sm-service:${{ github.event.release.tag_name }}
+        run: docker tag unibeat-api registry.digitalocean.com/ds-services-container/unibeat-api:${{ github.event.release.tag_name }}
       - name: Push image to DO Container Registry
-        run: docker push registry.digitalocean.com/ds-services-container/sm-service:${{ github.event.release.tag_name }}
+        run: docker push registry.digitalocean.com/ds-services-container/unibeat-api:${{ github.event.release.tag_name }}
 
   deploy:
     name: Configure and deploy to staging
@@ -37,4 +37,4 @@ jobs:
       - name: Authenticate kubectl
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ds-k8s
       - name: Helm Deploy
-        run: helm upgrade --install --create-namespace -n prd --set image.tag=${{ github.event.release.tag_name }} --set envPrefix=prd sm-service sm-service
+        run: helm upgrade --install --create-namespace -n prd --set image.tag=${{ github.event.release.tag_name }} --set envPrefix=prd unibeat-api unibeat-api

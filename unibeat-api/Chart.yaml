@@ -1,6 +1,6 @@
 apiVersion: v2
-name: sm-service
-description: A Helm chart for Kubernetes
+name: unibeat-api
+description: Helm Chart to deploy the API for unibeat, a WIP unity-based clone of jubeat
 
 # A chart can be either an 'application' or a 'library' chart.
 #

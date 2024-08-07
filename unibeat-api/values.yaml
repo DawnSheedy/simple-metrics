@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.digitalocean.com/ds-services-container/sm-service
+  repository: registry.digitalocean.com/ds-services-container/unibeat-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -50,14 +50,14 @@ ingress:
   hosts:
     - host: dawnshee.com
       paths:
-        - path: /sm-service
+        - path: /unibeat/api/v1
           pathType: ImplementationSpecific
     - host: shai.one
       paths:
-        - path: /sm-service
+        - path: /unibeat/api/v1
           pathType: ImplementationSpecific
   tls:
-   - secretName: sm-service
+   - secretName: unibeat-api
      hosts:
        - dawnshee.com
        - shai.one

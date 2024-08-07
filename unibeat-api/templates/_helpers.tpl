@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "sm-service.name" -}}
+{{- define "unibeat-api.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "sm-service.fullname" -}}
+{{- define "unibeat-api.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "sm-service.chart" -}}
+{{- define "unibeat-api.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "sm-service.labels" -}}
-helm.sh/chart: {{ include "sm-service.chart" . }}
-{{ include "sm-service.selectorLabels" . }}
+{{- define "unibeat-api.labels" -}}
+helm.sh/chart: {{ include "unibeat-api.chart" . }}
+{{ include "unibeat-api.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "sm-service.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "sm-service.name" . }}
+{{- define "unibeat-api.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "unibeat-api.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "sm-service.serviceAccountName" -}}
+{{- define "unibeat-api.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "sm-service.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "unibeat-api.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
